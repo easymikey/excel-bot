@@ -1,15 +1,16 @@
+import fs from "fs";
+import path from "path";
 import axios from "axios";
-import { resolve } from "path";
-import { createWriteStream } from "fs";
-import type { TRequest } from "./types";
 
 async function downloadFileByUrl(url: string) {
-  const writer = createWriteStream(
-    resolve(process.cwd(), `${process.env.SOURCE_NAME}`)
+  const writer = fs.createWriteStream(
+    path.resolve(process.cwd(), `${process.env.SOURCE_NAME}`)
   );
 
   try {
-    const { data } = await axios.get(url, { responseType: "stream" });
+    const {data} = await axios.get(url, {
+      responseType: "stream"
+    });
 
     data.pipe(writer);
 
@@ -23,18 +24,17 @@ async function downloadFileByUrl(url: string) {
 }
 
 async function getFileUrl() {
-  const {
-    data: { file },
-  } = await axios.get<TRequest>(
-    encodeURI(`${process.env.API_URL}?path=${process.env.DISK_PATH}`),
-    {
-      headers: {
-        Authorization: `OAuth ${process.env.TOKEN}`,
-      },
-    }
+  const url = encodeURI(
+    `${process.env.API_URL}?path=${process.env.DISK_PATH}`
   );
 
-  return file;
+  const {data} = await axios.get<TRequest>(url, {
+    headers: {
+      Authorization: `OAuth ${process.env.TOKEN}`
+    }
+  });
+
+  return data.file;
 }
 
-export { downloadFileByUrl, getFileUrl };
+export {downloadFileByUrl, getFileUrl};

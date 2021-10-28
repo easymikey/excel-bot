@@ -1,10 +1,9 @@
-import { config } from "dotenv";
+import * as dotenv from "dotenv";
 
-import { downloadFileByUrl, getFileUrl } from "./helpers";
+import {downloadFileByUrl, getFileUrl} from "./helpers";
+import {createCopyOfFile} from "./create-copy-of-file";
 
-import { createCopyOfFile } from "./create-copy-of-file";
-
-config();
+dotenv.config();
 
 (async () => {
   const url = await getFileUrl();
