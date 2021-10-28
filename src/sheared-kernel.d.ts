@@ -1,6 +1,6 @@
 type TDate = string;
 
-export type TRequest = {
+type TRequest = {
   name: string;
   created: TDate;
   modified: TDate;
