@@ -1,19 +1,28 @@
-import * as dotenv from "dotenv";
+import { join } from 'path';
+import { unlink } from 'fs/promises';
+import * as dotenv from 'dotenv';
 
-import {downloadFileByUrl, getFileUrl} from "./helpers";
-import {createCopyOfFile} from "./create-copy-of-file";
+import { upload } from './upload';
+import { download } from './download';
+import { getFileUrl, getWeekday } from './helpers';
+import { removeColumnsFromExcelFile } from './remove-columns-from-excel-file';
 
 dotenv.config();
 
 (async () => {
-  const url = await getFileUrl();
-  const deletedCells = process.argv.slice(2);
+  try {
+    const filename = `${process.env.SOURCE_NAME}`;
+    const file = await getFileUrl(
+      join(`${process.env.DISK_PATH}`, filename)
+    );
 
-  await downloadFileByUrl(url);
-
-  createCopyOfFile(
-    `${process.env.SOURCE_NAME}`,
-    `${process.env.DIST_NAME}`,
-    deletedCells
-  );
+    await download(file, filename);
+    await removeColumnsFromExcelFile(filename);
+    await upload(
+      join(`${process.env.DISK_PATH}`, `${process.env.DIST_NAME}`),
+      filename
+    );
+  } catch (e) {
+    console.error(e);
+  }
 })();
