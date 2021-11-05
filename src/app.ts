@@ -1,27 +1,40 @@
 import { join } from 'path';
-import { unlink } from 'fs/promises';
 import * as dotenv from 'dotenv';
+import schedule from 'node-schedule';
+import { unlink } from 'fs/promises';
 
-import { upload } from './upload';
-import { download } from './download';
-import { getFileUrl, getWeekday } from './helpers';
-import { removeColumnsFromExcelFile } from './remove-columns-from-excel-file';
+import {
+  upload,
+  download,
+  writeLog,
+  removeWorksheetColumns
+} from './features';
+import { fetchFileUrl, getWeekday } from './helpers';
 
 dotenv.config();
 
 (async () => {
   try {
-    const filename = `${process.env.SOURCE_NAME}`;
-    const file = await getFileUrl(
-      join(`${process.env.DISK_PATH}`, filename)
-    );
+    schedule.scheduleJob('00 19 * * 3-6', async date => {
+      const weekday = getWeekday(date);
+      const workingDays = process.argv.slice(2);
 
-    await download(file, filename);
-    await removeColumnsFromExcelFile(filename);
-    await upload(
-      join(`${process.env.DISK_PATH}`, `${process.env.DIST_NAME}`),
-      filename
-    );
+      if (workingDays.includes(weekday)) {
+        const { DISK_PATH, SOURCE_NAME, DIST_NAME } = process.env;
+
+        const getFullPath = (filename: string) =>
+          join(`${DISK_PATH}`, filename);
+        const remoteUrl = await fetchFileUrl(
+          getFullPath(`${SOURCE_NAME}`)
+        );
+
+        await download(remoteUrl, `${SOURCE_NAME}`);
+        await removeWorksheetColumns(`${SOURCE_NAME}`);
+        await upload(getFullPath(`${DIST_NAME}`), `${SOURCE_NAME}`);
+        await unlink(`${SOURCE_NAME}`);
+        await writeLog(date);
+      }
+    });
   } catch (e) {
     console.error(e);
   }
