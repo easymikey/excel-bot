@@ -2,13 +2,12 @@ import { join } from 'path';
 import { createWriteStream } from 'fs';
 import { https } from 'follow-redirects';
 
-import { showProgress } from './helpers';
+import { showProgress } from '../helpers';
 
 export const download = (remoteUrl: string, filename: string) =>
   new Promise((resolve, reject) => {
     let totalBytes = 0;
     let receivedBytes = 0;
-
     const writeStream = createWriteStream(
       join(process.cwd(), filename)
     );
