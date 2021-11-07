@@ -23,3 +23,26 @@ jobs:
           npm install
           npm run prettier-check
           npm run build
+
+      - name: Deploy to Heroku
+        uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
+          heroku_email: ${{ secrets.HEROKU_EMAIL }}
+          docker_heroku_process_type: worker
+          usedocker: true
+          docker_build_args: |
+            API_URL
+            DISK_PATH
+            TOKEN
+            SOURCE_NAME
+            DIST_NAME
+            TZ
+        env:
+          API_URL: ${{ secrets.API_URL }}
+          DISK_PATH: ${{ secrets.DISK_PATH }}
+          TOKEN: ${{ secrets.TOKEN }}
+          SOURCE_NAME: ${{ secrets.SOURCE_NAME }}
+          DIST_NAME: ${{ secrets.DIST_NAME }}
+          TZ: ${{ secrets.TZ }}
