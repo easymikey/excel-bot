@@ -1,4 +1,4 @@
-name: 🚀 CI
+name: 🚀 Deploy
 
 on: push
 
@@ -10,21 +10,21 @@ jobs:
         node-version: [14.x, 16.x]
 
     steps:
-      - name: Checkout repo
+      - name: ⬇️ Checkout repo
         uses: actions/checkout@v2
 
-      - name: Setup node
+      - name: ⚙️ Setup node
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Build app
+      - name: 🛠 Build app
         run: |
           npm install
           npm run prettier-check
           npm run build
 
-      - name: Deploy to Heroku
+      - name: 🚀 Deploy app
         uses: akhileshns/heroku-deploy@v3.12.12
         with:
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
