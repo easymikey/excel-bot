@@ -15,7 +15,8 @@ dotenv.config();
 
 (async () => {
   try {
-    schedule.scheduleJob('00 19 * * 3-6', async date => {
+    console.log('App started');
+    schedule.scheduleJob('00 20 * * *', async date => {
       const weekday = getWeekday(date);
       const workingDays = process.argv.slice(2);
 
