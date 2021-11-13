@@ -9,4 +9,5 @@ export const showProgress = (
   process.stdout.write(
     `${percentage}/% | ${receivedBytes} bytes ${type}ed out of ${totalBytes} bytes.`
   );
+  process.stdout.write('\r');
 };
