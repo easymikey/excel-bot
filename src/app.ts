@@ -1,4 +1,5 @@
-import { join } from 'path';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import * as dotenv from 'dotenv';
 import schedule from 'node-schedule';
 import { unlink } from 'fs/promises';
@@ -21,18 +22,21 @@ dotenv.config();
       const workingDays = process.argv.slice(2);
 
       if (workingDays.includes(weekday)) {
-        const { DISK_PATH, SOURCE_NAME, DIST_NAME } = process.env;
+        const diskPath = process.env.DISK_PATH as string;
+        const sourceName = process.env.SOURCE_NAME as string;
+        const distName = process.env.DIST_NAME as string;
 
-        const getFullPath = (filename: string) =>
-          join(`${DISK_PATH}`, filename);
+        const getFullDiskPath = (filename: string) =>
+          join(diskPath, filename);
+
         const remoteUrl = await fetchFileUrl(
-          getFullPath(`${SOURCE_NAME}`)
+          getFullDiskPath(sourceName)
         );
 
-        await download(remoteUrl, `${SOURCE_NAME}`);
-        await removeWorksheetColumns(`${SOURCE_NAME}`);
-        await upload(getFullPath(`${DIST_NAME}`), `${SOURCE_NAME}`);
-        await unlink(`${SOURCE_NAME}`);
+        await download(remoteUrl, sourceName);
+        await removeWorksheetColumns(sourceName);
+        await upload(getFullDiskPath(distName), sourceName);
+        await unlink(sourceName);
         await writeLog(date);
       }
     });
