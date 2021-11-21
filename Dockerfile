@@ -11,4 +11,4 @@ COPY src src
 
 RUN npm run build
 
-CMD ["node", "/app/dist/app.js",  "Sun", "Wed"]
+CMD ["node", "/app/dist/app.js", "Sun", "Wed"]
