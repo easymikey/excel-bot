@@ -1,5 +1,4 @@
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { join } from 'path';
 import * as dotenv from 'dotenv';
 import schedule from 'node-schedule';
 import { unlink } from 'fs/promises';
@@ -16,7 +15,8 @@ dotenv.config();
 
 (async () => {
   try {
-    console.log('App started');
+    console.log('App started 🚀');
+
     schedule.scheduleJob('00 22 * * *', async date => {
       const weekday = getWeekday(date);
       const workingDays = process.argv.slice(2);
@@ -41,6 +41,7 @@ dotenv.config();
       }
     });
   } catch (e) {
+    console.error('App crashed 🚒');
     console.error(e);
   }
 })();
