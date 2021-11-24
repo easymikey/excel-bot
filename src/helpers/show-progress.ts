@@ -3,11 +3,10 @@ export const showProgress = (
   receivedBytes: number,
   totalBytes: number
 ) => {
-  const percentage = ((receivedBytes * 100) / totalBytes).toFixed(2);
+  const percentage = Math.trunc((receivedBytes * 100) / totalBytes);
+  const progressBarSymbols = percentage / 5;
+  const dots = '.'.repeat(progressBarSymbols);
+  const empty = ' '.repeat(20 - progressBarSymbols);
 
-  process.stdout.write('\r');
-  process.stdout.write(
-    `${percentage}/% | ${receivedBytes} bytes ${type}ed out of ${totalBytes} bytes.`
-  );
-  process.stdout.write('\r');
+  process.stdout.write(`\r${type}: [${dots}${empty}] ${percentage}%`);
 };

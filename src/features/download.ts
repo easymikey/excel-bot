@@ -20,6 +20,7 @@ export const download = (remoteUrl: string, filename: string) =>
           showProgress('download', receivedBytes, totalBytes);
         })
         .on('end', () => {
+          process.stdout.write('\n');
           writeStream.end(() => resolve(null));
         })
         .pipe(writeStream);

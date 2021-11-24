@@ -15,7 +15,10 @@ export const upload = async (path: string, filename: string) => {
         receivedBytes += chunk.length;
         showProgress('upload', receivedBytes, totalBytes);
       })
-      .on('end', () => uploadStream.end())
+      .on('end', () => {
+        process.stdout.write('\n');
+        uploadStream.end();
+      })
       .pipe(uploadStream);
   } catch (error) {
     console.log(error);
