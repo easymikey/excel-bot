@@ -2,7 +2,11 @@ name: 🚀 Deploy
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
+
+env:
+  HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+  HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
 
 jobs:
   deploy:
@@ -23,11 +27,10 @@ jobs:
           npm run prettier-check
           npm run build
 
+      - name: 🐳 Docker build
+        run: docker login --username=_ --password=$HEROKU_API_KEY registry.heroku.com
+
       - name: 🚀 Deploy app
-        uses: akhileshns/heroku-deploy@v3.12.12
-        with:
-          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-          heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
-          heroku_email: ${{ secrets.HEROKU_EMAIL }}
-          docker_heroku_process_type: worker
-          usedocker: true
+        run: |
+          heroku container:push worker -a $HEROKU_APP_NAME
+          heroku container:release worker -a $HEROKU_APP_NAME
