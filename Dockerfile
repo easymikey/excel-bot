@@ -1,5 +1,7 @@
 FROM node:14-alpine
 
+WORKDIR /bot
+
 COPY package.json ./
 COPY tsconfig.json ./
 
