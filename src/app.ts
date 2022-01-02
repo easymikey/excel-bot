@@ -15,9 +15,9 @@ dotenv.config();
 
 (async () => {
   try {
-    console.log('Bot started up 🚀');
-
     schedule.scheduleJob('00 22 * * *', async date => {
+      console.log('Bot started up 🚀');
+
       const weekday = getWeekday(date);
       const workingDays = process.argv.slice(2);
 
@@ -40,7 +40,7 @@ dotenv.config();
         await writeLog(date);
       }
 
-      console.log('Bot has completed work ✅');
+      console.log('\nBot has completed work ✅');
     });
   } catch (e) {
     console.error('Bot crashed 🚒');

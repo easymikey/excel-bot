@@ -7,7 +7,7 @@
     "build": "tsc",
     "clear": "rm -rf ./dist",
     "prettier-check": "prettier --check 'src/*.ts'",
-    "start": "node dist/index.js"
+    "start": "node dist/app.js Sun Wed"
   },
   "keywords": [],
   "author": "",
