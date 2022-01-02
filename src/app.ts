@@ -1,5 +1,6 @@
 import { join } from 'path';
 import * as dotenv from 'dotenv';
+import schedule from 'node-schedule';
 import { unlink } from 'fs/promises';
 
 import {
@@ -14,28 +15,33 @@ dotenv.config();
 
 (async () => {
   try {
-    const date = new Date();
-    const weekday = getWeekday(date);
-    const workingDays = process.env.WORKING_DAYS?.split(',');
+    console.log('Bot started up 🚀');
 
-    if (workingDays?.includes(weekday)) {
-      const diskPath = process.env.DISK_PATH as string;
-      const sourceName = process.env.SOURCE_NAME as string;
-      const distName = process.env.DIST_NAME as string;
+    schedule.scheduleJob('00 22 * * *', async date => {
+      const weekday = getWeekday(date);
+      const workingDays = process.argv.slice(2);
 
-      const getFullDiskPath = (filename: string) =>
-        join(diskPath, filename);
+      if (workingDays.includes(weekday)) {
+        const diskPath = process.env.DISK_PATH as string;
+        const sourceName = process.env.SOURCE_NAME as string;
+        const distName = process.env.DIST_NAME as string;
 
-      const remoteUrl = await fetchFileUrl(
-        getFullDiskPath(sourceName)
-      );
+        const getFullDiskPath = (filename: string) =>
+          join(diskPath, filename);
 
-      await download(remoteUrl, sourceName);
-      await removeWorksheetColumns(sourceName);
-      await upload(getFullDiskPath(distName), sourceName);
-      await unlink(sourceName);
-      await writeLog(date);
-    }
+        const remoteUrl = await fetchFileUrl(
+          getFullDiskPath(sourceName)
+        );
+
+        await download(remoteUrl, sourceName);
+        await removeWorksheetColumns(sourceName);
+        await upload(getFullDiskPath(distName), sourceName);
+        await unlink(sourceName);
+        await writeLog(date);
+      }
+
+      console.log('Bot has completed work ✅');
+    });
   } catch (e) {
     console.error('Bot crashed 🚒');
     console.error(e);
