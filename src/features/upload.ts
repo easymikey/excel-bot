@@ -15,6 +15,6 @@ export const upload = async (path: string, filename: string) => {
       })
       .pipe(uploadStream);
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
