@@ -15,7 +15,7 @@ dotenv.config();
 
 (async () => {
   try {
-    schedule.scheduleJob('* * * * *', async date => {
+    schedule.scheduleJob('00 22 * * *', async date => {
       console.log('Bot started up 🚀');
 
       const weekday = getWeekday(date);
